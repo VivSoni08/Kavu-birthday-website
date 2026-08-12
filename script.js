@@ -72,11 +72,8 @@ powerButton.addEventListener("click", () => {
 
 shutterButton.addEventListener("click", () => {
 
-    // Don't allow photos while camera is off
+    // Camera must be ON
     if (!cameraOn) return;
-
-
-    photoNumber++;
 
     const focusBox = document.querySelector(".focus-box");
 
@@ -93,7 +90,18 @@ shutterButton.addEventListener("click", () => {
         camera.classList.add("taking-photo");
 
 
-        // Remove flash after 150ms
+        // Move to next memory
+
+        photoNumber++;
+
+        if (photoNumber >= memories.length) {
+            photoNumber = 0;
+        }
+
+        memoryImage.src = memories[photoNumber];
+
+
+        // Remove flash
 
         setTimeout(() => {
 
