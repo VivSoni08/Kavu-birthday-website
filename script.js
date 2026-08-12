@@ -1,4 +1,3 @@
-javascript
 const camera = document.querySelector(".camera");
 const powerButton = document.querySelector(".power-button");
 const shutterButton = document.querySelector(".shutter-button");
@@ -28,7 +27,6 @@ const memoryImage = document.querySelector("#memory-image");
 powerButton.addEventListener("click", () => {
 
     if (starting) return;
-
 
     // TURN CAMERA OFF
 
