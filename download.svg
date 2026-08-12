@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+    <rect width="800" height="600" fill="#8e6e53"></rect>
+    <text x="400" y="280" text-anchor="middle" fill="white" font-family="Arial" font-size="48">
+        TEST PHOTO 3
+    </text>
+    <text x="400" y="340" text-anchor="middle" fill="#eeeeee" font-family="Arial" font-size="24">
+        Kavu Camera
+    </text>
+</svg>
