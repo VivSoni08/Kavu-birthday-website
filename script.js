@@ -6,6 +6,14 @@ let cameraOn = false;
 let starting = false;
 let photoNumber = 0;
 
+const memories = [
+    "images/test-1.svg",
+    "images/test-2.svg",
+    "images/test-3.svg"
+];
+
+const memoryImage = document.querySelector("#memory-image");
+
 
 // =========================
 // POWER BUTTON
