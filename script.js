@@ -1,3 +1,4 @@
+javascript
 const camera = document.querySelector(".camera");
 const powerButton = document.querySelector(".power-button");
 const shutterButton = document.querySelector(".shutter-button");
@@ -30,6 +31,7 @@ powerButton.addEventListener("click", () => {
 
 
     // TURN CAMERA OFF
+
     if (cameraOn) {
 
         cameraOn = false;
@@ -69,6 +71,7 @@ powerButton.addEventListener("click", () => {
 shutterButton.addEventListener("click", () => {
 
     // Camera must be ON
+
     if (!cameraOn) return;
 
     const focusBox = document.querySelector(".focus-box");
