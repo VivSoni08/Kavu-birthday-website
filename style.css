@@ -651,3 +651,26 @@ body {
 
     opacity: 1;
 }
+/* =========================
+   CAMERA LIVE VIEW
+========================= */
+
+.live-view {
+    position: absolute;
+    inset: 12% 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #34495e,
+            #7f8c8d
+        );
+
+    opacity: 0;
+
+    transition: opacity 0.2s ease;
+}
+
+.camera.camera-on .live-view {
+    opacity: 1;
+}
