@@ -117,7 +117,91 @@
         </div>
 
     </div>
-    <script src="script.js"></script>
+    <script>
+const camera = document.querySelector(".camera");
+const powerButton = document.querySelector(".power-button");
+const shutterButton = document.querySelector(".shutter-button");
+
+let cameraOn = false;
+let starting = false;
+let photoNumber = 0;
+
+const memories = [
+    "images/test-1.svg",
+    "images/test-2.svg",
+    "images/test-3.svg"
+];
+
+const memoryImage = document.querySelector("#memory-image");
+
+
+// POWER BUTTON
+
+powerButton.addEventListener("click", () => {
+
+    if (starting) return;
+
+    if (cameraOn) {
+
+        cameraOn = false;
+
+        camera.classList.remove("camera-on");
+
+        return;
+    }
+
+    starting = true;
+
+    camera.classList.add("camera-starting");
+
+    setTimeout(() => {
+
+        camera.classList.remove("camera-starting");
+        camera.classList.add("camera-on");
+
+        cameraOn = true;
+        starting = false;
+
+    }, 1500);
+
+});
+
+
+// SHUTTER BUTTON
+
+shutterButton.addEventListener("click", () => {
+
+    if (!cameraOn) return;
+
+    const focusBox = document.querySelector(".focus-box");
+
+    focusBox.classList.add("focused");
+
+    setTimeout(() => {
+
+        camera.classList.add("taking-photo");
+
+        photoNumber++;
+
+        if (photoNumber >= memories.length) {
+            photoNumber = 0;
+        }
+
+        if (memoryImage) {
+            memoryImage.src = memories[photoNumber];
+        }
+
+        setTimeout(() => {
+
+            camera.classList.remove("taking-photo");
+            focusBox.classList.remove("focused");
+
+        }, 150);
+
+    }, 400);
+
+});
+</script>
 
 </body>
 </html>
