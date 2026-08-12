@@ -6,13 +6,10 @@ let cameraOn = false;
 let starting = false;
 let photoNumber = 0;
 
-const memories = [
-    "images/test-1.svg",
-    "images/test-2.svg",
-    "images/test-3.svg"
-];
 
-const memoryImage = document.querySelector("#memory-image");
+// =========================
+// MEMORY PHOTOS
+// =========================
 
 const memories = [
     "images/test-1.svg",
@@ -33,7 +30,6 @@ powerButton.addEventListener("click", () => {
 
 
     // TURN CAMERA OFF
-
     if (cameraOn) {
 
         cameraOn = false;
@@ -90,7 +86,7 @@ shutterButton.addEventListener("click", () => {
         camera.classList.add("taking-photo");
 
 
-        // Move to next memory
+        // Move to next photo
 
         photoNumber++;
 
@@ -98,7 +94,12 @@ shutterButton.addEventListener("click", () => {
             photoNumber = 0;
         }
 
-        memoryImage.src = memories[photoNumber];
+
+        // Display next photo
+
+        if (memoryImage) {
+            memoryImage.src = memories[photoNumber];
+        }
 
 
         // Remove flash
