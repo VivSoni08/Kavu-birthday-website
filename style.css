@@ -674,3 +674,29 @@ body {
 .camera.camera-on .live-view {
     opacity: 1;
 }
+/* =========================
+   SHUTTER EFFECT
+========================= */
+
+.camera.taking-photo .screen {
+
+    animation: shutterFlash 0.15s ease;
+
+}
+
+
+@keyframes shutterFlash {
+
+    0% {
+        filter: brightness(1);
+    }
+
+    50% {
+        filter: brightness(3);
+    }
+
+    100% {
+        filter: brightness(1);
+    }
+
+}
