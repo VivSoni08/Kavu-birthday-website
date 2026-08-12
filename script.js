@@ -14,6 +14,14 @@ const memories = [
 
 const memoryImage = document.querySelector("#memory-image");
 
+const memories = [
+    "images/test-1.svg",
+    "images/test-2.svg",
+    "images/test-3.svg"
+];
+
+const memoryImage = document.querySelector("#memory-image");
+
 
 // =========================
 // POWER BUTTON
