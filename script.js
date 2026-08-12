@@ -1,14 +1,23 @@
 const camera = document.querySelector(".camera");
 const powerButton = document.querySelector(".power-button");
+const shutterButton = document.querySelector(".shutter-button");
 
 let cameraOn = false;
 let starting = false;
+let photoNumber = 0;
+
+
+// =========================
+// POWER BUTTON
+// =========================
 
 powerButton.addEventListener("click", () => {
 
     if (starting) return;
 
-    // Turn camera OFF
+
+    // TURN CAMERA OFF
+
     if (cameraOn) {
 
         cameraOn = false;
@@ -19,7 +28,7 @@ powerButton.addEventListener("click", () => {
     }
 
 
-    // Start camera
+    // START CAMERA
 
     starting = true;
 
@@ -39,34 +48,42 @@ powerButton.addEventListener("click", () => {
     }, 1500);
 
 });
-const shutterButton = document.querySelector(".shutter-button");
 
-let photoNumber = 0;
+
+// =========================
+// SHUTTER BUTTON
+// =========================
 
 shutterButton.addEventListener("click", () => {
 
-    // Camera must be ON
+    // Don't allow photos while camera is off
     if (!cameraOn) return;
+
 
     photoNumber++;
 
     const focusBox = document.querySelector(".focus-box");
 
-    // Focus
-    focusBox.style.transform = "scale(1.15)";
-    focusBox.style.borderColor = "#00ff66";
+
+    // FOCUS
+
+    focusBox.classList.add("focused");
+
+
+    // TAKE PHOTO
 
     setTimeout(() => {
 
-        // Simulate shutter
         camera.classList.add("taking-photo");
+
+
+        // Remove flash after 150ms
 
         setTimeout(() => {
 
             camera.classList.remove("taking-photo");
 
-            focusBox.style.transform = "scale(1)";
-            focusBox.style.borderColor = "rgba(255,255,255,0.8)";
+            focusBox.classList.remove("focused");
 
         }, 150);
 
