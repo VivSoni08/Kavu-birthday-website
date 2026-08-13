@@ -31,8 +31,8 @@
                 </button>
 
                 <div class="zoom-rocker">
-                    <span>W</span>
-                    <span>T</span>
+                    <span class="zoom-wide">W</span>
+                    <span class="zoom-tele">T</span>
                 </div>
 
             </div>
@@ -65,12 +65,26 @@
 
             <div class="shooting-screen">
 
+                <!-- SCREEN TOP -->
+
                 <div class="screen-top">
-                    <span>●</span>
-                    <span>AUTO</span>
-                    <span>🔋 100%</span>
+
+                    <span class="record-indicator">
+                        ●
+                    </span>
+
+                    <span class="mode-indicator">
+                        AUTO
+                    </span>
+
+                    <span class="battery-indicator">
+                        🔋 <span id="battery-level">100%</span>
+                    </span>
+
                 </div>
 
+
+                <!-- SCREEN CENTER -->
 
                 <div class="screen-center">
 
@@ -84,16 +98,69 @@
 
                     </div>
 
+                    <!-- Focus box -->
+
                     <div class="focus-box"></div>
+
+
+                    <!-- REC indicator -->
+
+                    <div class="rec-display">
+
+                        <span class="rec-dot">
+                            ●
+                        </span>
+
+                        <span>REC</span>
+
+                        <span id="record-time">
+                            00:00
+                        </span>
+
+                    </div>
+
+
+                    <!-- Playback indicator -->
+
+                    <div class="playback-indicator">
+                        ▶
+                    </div>
+
+
+                    <!-- Photo number -->
+
+                    <div class="photo-counter">
+
+                        <span id="current-photo">
+                            1
+                        </span>
+
+                        /
+
+                        <span id="total-photos">
+                            3
+                        </span>
+
+                    </div>
 
                 </div>
 
 
+                <!-- SCREEN BOTTOM -->
+
                 <div class="screen-bottom">
 
-                    <span>1/125</span>
-                    <span>F2.8</span>
-                    <span>ISO 200</span>
+                    <span>
+                        1/125
+                    </span>
+
+                    <span>
+                        F2.8
+                    </span>
+
+                    <span>
+                        ISO 200
+                    </span>
 
                 </div>
 
@@ -108,11 +175,11 @@
 
         <div class="controls">
 
-            <button class="small-button">
+            <button class="small-button menu-button">
                 MENU
             </button>
 
-            <button class="small-button">
+            <button class="small-button disp-button">
                 DISP
             </button>
 
@@ -162,4 +229,5 @@
     <script src="script.js"></script>
 
 </body>
+
 </html>
