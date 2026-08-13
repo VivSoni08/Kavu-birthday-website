@@ -1629,3 +1629,11 @@ body {
         font-size: 5px;
     }
 }
+/* =========================================================
+   REMOVE DECORATIVE LENS
+========================================================= */
+
+.camera::after {
+    display: none !important;
+    content: none !important;
+}
