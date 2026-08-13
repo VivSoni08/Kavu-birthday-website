@@ -20,11 +20,14 @@ const batteryLevel = document.querySelector("#battery-level");
 
 const liveView = document.querySelector(".live-view");
 
-const playbackIndicator = document.querySelector(".playback-indicator");
+const playbackIndicator =
+    document.querySelector(".playback-indicator");
 
-const zoomWide = document.querySelector(".zoom-wide");
+const zoomWide =
+    document.querySelector(".zoom-wide");
 
-const zoomTele = document.querySelector(".zoom-tele");
+const zoomTele =
+    document.querySelector(".zoom-tele");
 
 
 // =========================================================
@@ -47,6 +50,8 @@ let recordingSeconds = 0;
 
 let recordingInterval = null;
 
+let zoomLevel = 1;
+
 
 // =========================================================
 // MEMORY PHOTOS
@@ -62,20 +67,19 @@ const memories = [
 
 ];
 
-
-// Update total photo count
-
-totalPhotos.textContent = memories.length;
+totalPhotos.textContent =
+    memories.length;
 
 
 // =========================================================
-// SOUND SYSTEM
+// AUDIO SYSTEM
 // =========================================================
 
 let audioContext = null;
 
 
-// Create audio context only after user interaction
+// Create the audio engine after the
+// first user interaction.
 
 function getAudioContext() {
 
@@ -89,19 +93,32 @@ function getAudioContext() {
 
     }
 
+    if (audioContext.state === "suspended") {
+
+        audioContext.resume();
+
+    }
+
     return audioContext;
 }
 
 
-// Simple beep
+// =========================================================
+// GENERIC TONE
+// =========================================================
 
-function playBeep(
-    frequency = 800,
-    duration = 0.08,
-    volume = 0.05
+function playTone(
+    frequency,
+    duration,
+    volume = 0.04,
+    type = "sine"
 ) {
 
-    const ctx = getAudioContext();
+    const ctx =
+        getAudioContext();
+
+    const now =
+        ctx.currentTime;
 
     const oscillator =
         ctx.createOscillator();
@@ -110,98 +127,367 @@ function playBeep(
         ctx.createGain();
 
 
-    oscillator.type = "sine";
+    oscillator.type =
+        type;
 
-    oscillator.frequency.value =
-        frequency;
+    oscillator.frequency.setValueAtTime(
+        frequency,
+        now
+    );
 
 
     gain.gain.setValueAtTime(
         volume,
-        ctx.currentTime
+        now
     );
-
 
     gain.gain.exponentialRampToValueAtTime(
         0.001,
-        ctx.currentTime + duration
+        now + duration
     );
 
 
     oscillator.connect(gain);
 
-    gain.connect(ctx.destination);
+    gain.connect(
+        ctx.destination
+    );
 
 
-    oscillator.start();
+    oscillator.start(now);
 
     oscillator.stop(
-        ctx.currentTime + duration
+        now + duration
     );
 }
 
 
-// Focus beep
+// =========================================================
+// MOTOR SOUND
+// Used for lens extension/retraction
+// =========================================================
+
+function playMotor(
+    duration = 0.55,
+    direction = "up"
+) {
+
+    const ctx =
+        getAudioContext();
+
+    const now =
+        ctx.currentTime;
+
+
+    const oscillator =
+        ctx.createOscillator();
+
+    const gain =
+        ctx.createGain();
+
+
+    oscillator.type =
+        "sawtooth";
+
+
+    if (direction === "up") {
+
+        oscillator.frequency.setValueAtTime(
+            110,
+            now
+        );
+
+        oscillator.frequency.exponentialRampToValueAtTime(
+            310,
+            now + duration
+        );
+
+    } else {
+
+        oscillator.frequency.setValueAtTime(
+            310,
+            now
+        );
+
+        oscillator.frequency.exponentialRampToValueAtTime(
+            95,
+            now + duration
+        );
+
+    }
+
+
+    gain.gain.setValueAtTime(
+        0.001,
+        now
+    );
+
+    gain.gain.linearRampToValueAtTime(
+        0.035,
+        now + 0.05
+    );
+
+    gain.gain.setValueAtTime(
+        0.035,
+        now + duration - 0.08
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        now + duration
+    );
+
+
+    oscillator.connect(gain);
+
+    gain.connect(
+        ctx.destination
+    );
+
+
+    oscillator.start(now);
+
+    oscillator.stop(
+        now + duration
+    );
+
+
+    // Mechanical high-frequency layer
+
+    setTimeout(
+        () => {
+
+            playTone(
+                direction === "up"
+                    ? 700
+                    : 500,
+
+                0.08,
+
+                0.012,
+
+                "square"
+            );
+
+        },
+        duration * 1000
+    );
+}
+
+
+// =========================================================
+// POWER-ON SOUND
+// =========================================================
+
+function playPowerOnSound() {
+
+    getAudioContext();
+
+
+    // Lens motor starts
+
+    playMotor(
+        0.65,
+        "up"
+    );
+
+
+    // Mechanical lens movement
+
+    setTimeout(
+        () => {
+
+            playTone(
+                480,
+                0.06,
+                0.035,
+                "square"
+            );
+
+        },
+        500
+    );
+
+
+    // Final confirmation beep
+
+    setTimeout(
+        () => {
+
+            playTone(
+                880,
+                0.09,
+                0.035,
+                "sine"
+            );
+
+        },
+        850
+    );
+
+}
+
+
+// =========================================================
+// POWER-OFF SOUND
+// =========================================================
+
+function playPowerOffSound() {
+
+    getAudioContext();
+
+
+    // Confirmation beep
+
+    playTone(
+        620,
+        0.08,
+        0.03,
+        "sine"
+    );
+
+
+    // Lens retracts
+
+    setTimeout(
+        () => {
+
+            playMotor(
+                0.65,
+                "down"
+            );
+
+        },
+        100
+    );
+
+
+    // Final mechanical click
+
+    setTimeout(
+        () => {
+
+            playTone(
+                260,
+                0.07,
+                0.025,
+                "square"
+            );
+
+        },
+        720
+    );
+
+}
+
+
+// =========================================================
+// FOCUS SOUND
+// =========================================================
 
 function playFocusSound() {
 
-    playBeep(
-        1000,
-        0.06,
-        0.045
+    getAudioContext();
+
+
+    // First focus tone
+
+    playTone(
+        720,
+        0.055,
+        0.035,
+        "sine"
+    );
+
+
+    // Second confirmation tone
+
+    setTimeout(
+        () => {
+
+            playTone(
+                1050,
+                0.065,
+                0.035,
+                "sine"
+            );
+
+        },
+        70
     );
 
 }
 
 
-// Shutter sound
+// =========================================================
+// SHUTTER SOUND
+// =========================================================
 
 function playShutterSound() {
 
-    const ctx = getAudioContext();
+    const ctx =
+        getAudioContext();
 
-    const now = ctx.currentTime;
+    const now =
+        ctx.currentTime;
 
 
-    // =========================================
-    // SHUTTER "CLACK"
-    // =========================================
+    // =====================================================
+    // FIRST SHUTTER CURTAIN
+    // =====================================================
 
-    const clickOscillator = ctx.createOscillator();
-    const clickGain = ctx.createGain();
+    const clickOscillator =
+        ctx.createOscillator();
 
-    clickOscillator.type = "square";
+    const clickGain =
+        ctx.createGain();
+
+
+    clickOscillator.type =
+        "square";
+
 
     clickOscillator.frequency.setValueAtTime(
-        1800,
+        2100,
         now
     );
 
     clickOscillator.frequency.exponentialRampToValueAtTime(
-        350,
+        380,
         now + 0.035
     );
 
+
     clickGain.gain.setValueAtTime(
-        0.09,
+        0.10,
         now
     );
 
     clickGain.gain.exponentialRampToValueAtTime(
         0.001,
-        now + 0.04
+        now + 0.045
     );
 
-    clickOscillator.connect(clickGain);
-    clickGain.connect(ctx.destination);
+
+    clickOscillator.connect(
+        clickGain
+    );
+
+    clickGain.connect(
+        ctx.destination
+    );
+
 
     clickOscillator.start(now);
-    clickOscillator.stop(now + 0.04);
+
+    clickOscillator.stop(
+        now + 0.045
+    );
 
 
-    // =========================================
-    // SECOND MECHANICAL CLICK
-    // =========================================
+    // =====================================================
+    // SECOND SHUTTER CURTAIN
+    // =====================================================
 
     const secondOscillator =
         ctx.createOscillator();
@@ -209,43 +495,54 @@ function playShutterSound() {
     const secondGain =
         ctx.createGain();
 
-    secondOscillator.type = "triangle";
+
+    secondOscillator.type =
+        "triangle";
+
 
     secondOscillator.frequency.setValueAtTime(
-        900,
-        now + 0.055
+        1250,
+        now + 0.065
     );
 
     secondOscillator.frequency.exponentialRampToValueAtTime(
-        180,
-        now + 0.095
+        190,
+        now + 0.115
     );
 
+
     secondGain.gain.setValueAtTime(
-        0.07,
-        now + 0.055
+        0.075,
+        now + 0.065
     );
 
     secondGain.gain.exponentialRampToValueAtTime(
         0.001,
-        now + 0.105
+        now + 0.125
     );
 
-    secondOscillator.connect(secondGain);
-    secondGain.connect(ctx.destination);
+
+    secondOscillator.connect(
+        secondGain
+    );
+
+    secondGain.connect(
+        ctx.destination
+    );
+
 
     secondOscillator.start(
-        now + 0.055
+        now + 0.065
     );
 
     secondOscillator.stop(
-        now + 0.11
+        now + 0.13
     );
 
 
-    // =========================================
-    // TINY CAMERA MECHANISM
-    // =========================================
+    // =====================================================
+    // HIGH FREQUENCY MECHANISM
+    // =====================================================
 
     const mechanism =
         ctx.createOscillator();
@@ -253,60 +550,153 @@ function playShutterSound() {
     const mechanismGain =
         ctx.createGain();
 
-    mechanism.type = "sine";
+
+    mechanism.type =
+        "sine";
+
 
     mechanism.frequency.setValueAtTime(
-        3200,
-        now + 0.015
+        3400,
+        now + 0.01
     );
 
     mechanism.frequency.exponentialRampToValueAtTime(
-        900,
-        now + 0.07
+        850,
+        now + 0.075
     );
+
 
     mechanismGain.gain.setValueAtTime(
         0.018,
-        now + 0.015
+        now + 0.01
     );
 
     mechanismGain.gain.exponentialRampToValueAtTime(
         0.001,
-        now + 0.075
+        now + 0.08
     );
 
-    mechanism.connect(mechanismGain);
-    mechanismGain.connect(ctx.destination);
+
+    mechanism.connect(
+        mechanismGain
+    );
+
+    mechanismGain.connect(
+        ctx.destination
+    );
+
 
     mechanism.start(
-        now + 0.015
+        now + 0.01
     );
 
     mechanism.stop(
-        now + 0.08
+        now + 0.085
     );
+
+
+    // =====================================================
+    // SMALL MECHANICAL BODY CLICK
+    // =====================================================
+
+    setTimeout(
+        () => {
+
+            playTone(
+                210,
+                0.045,
+                0.025,
+                "square"
+            );
+
+        },
+        130
+    );
+
 }
 
 
-// Power sound
+// =========================================================
+// ZOOM MOTOR SOUND
+// =========================================================
 
-function playPowerSound() {
+function playZoomSound(
+    direction
+) {
 
-    playBeep(
-        500,
-        0.08,
-        0.04
-    );
+    const ctx =
+        getAudioContext();
 
-    setTimeout(() => {
+    const now =
+        ctx.currentTime;
 
-        playBeep(
-            900,
-            0.12,
-            0.04
+
+    const oscillator =
+        ctx.createOscillator();
+
+    const gain =
+        ctx.createGain();
+
+
+    oscillator.type =
+        "sawtooth";
+
+
+    if (direction === "tele") {
+
+        oscillator.frequency.setValueAtTime(
+            180,
+            now
         );
 
-    }, 90);
+        oscillator.frequency.exponentialRampToValueAtTime(
+            420,
+            now + 0.16
+        );
+
+    } else {
+
+        oscillator.frequency.setValueAtTime(
+            420,
+            now
+        );
+
+        oscillator.frequency.exponentialRampToValueAtTime(
+            170,
+            now + 0.16
+        );
+
+    }
+
+
+    gain.gain.setValueAtTime(
+        0.001,
+        now
+    );
+
+    gain.gain.linearRampToValueAtTime(
+        0.025,
+        now + 0.025
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        now + 0.17
+    );
+
+
+    oscillator.connect(gain);
+
+    gain.connect(
+        ctx.destination
+    );
+
+
+    oscillator.start(now);
+
+    oscillator.stop(
+        now + 0.18
+    );
 
 }
 
@@ -322,25 +712,22 @@ powerButton.addEventListener(
         if (starting) return;
 
 
-        // Create audio context
-
         getAudioContext();
 
 
-        // =========================================
+        // ================================================
         // TURN CAMERA OFF
-        // =========================================
+        // ================================================
 
         if (cameraOn) {
 
             cameraOn = false;
 
+
             camera.classList.remove(
                 "camera-on"
             );
 
-
-            // Stop recording if active
 
             if (recording) {
 
@@ -349,29 +736,26 @@ powerButton.addEventListener(
             }
 
 
-            playBeep(
-                400,
-                0.08,
-                0.035
-            );
+            playPowerOffSound();
 
 
             return;
         }
 
 
-        // =========================================
+        // ================================================
         // START CAMERA
-        // =========================================
+        // ================================================
 
         starting = true;
+
 
         camera.classList.add(
             "camera-starting"
         );
 
 
-        playPowerSound();
+        playPowerOnSound();
 
 
         setTimeout(
@@ -392,12 +776,13 @@ powerButton.addEventListener(
                 starting = false;
 
 
-                // Reset photo
-
                 photoNumber = 0;
 
+
                 memoryImage.src =
-                    memories[photoNumber];
+                    memories[
+                        photoNumber
+                    ];
 
 
                 updatePhotoCounter();
@@ -419,12 +804,8 @@ shutterButton.addEventListener(
     "click",
     () => {
 
-        // Camera must be on
-
         if (!cameraOn) return;
 
-
-        // Prevent double-clicking
 
         if (takingPhoto) return;
 
@@ -432,9 +813,9 @@ shutterButton.addEventListener(
         takingPhoto = true;
 
 
-        // =========================================
+        // ================================================
         // FOCUS
-        // =========================================
+        // ================================================
 
         focusBox.classList.add(
             "focused"
@@ -443,8 +824,6 @@ shutterButton.addEventListener(
 
         playFocusSound();
 
-
-        // Focus lock
 
         setTimeout(
             () => {
@@ -457,15 +836,14 @@ shutterButton.addEventListener(
                     "locked"
                 );
 
-
             },
             300
         );
 
 
-        // =========================================
-        // TAKE PHOTO
-        // =========================================
+        // ================================================
+        // SHUTTER
+        // ================================================
 
         setTimeout(
             () => {
@@ -483,9 +861,9 @@ shutterButton.addEventListener(
                 playShutterSound();
 
 
-                // =================================
+                // ========================================
                 // CHANGE PHOTO
-                // =================================
+                // ========================================
 
                 photoNumber++;
 
@@ -499,8 +877,6 @@ shutterButton.addEventListener(
 
                 }
 
-
-                // Fade old image
 
                 liveView.classList.add(
                     "photo-changing"
@@ -523,15 +899,14 @@ shutterButton.addEventListener(
                             "photo-changing"
                         );
 
-
                     },
                     100
                 );
 
 
-                // =================================
-                // CLEAN UP EFFECTS
-                // =================================
+                // ========================================
+                // CLEAN UP
+                // ========================================
 
                 setTimeout(
                     () => {
@@ -554,10 +929,7 @@ shutterButton.addEventListener(
                         takingPhoto = false;
 
 
-                        // Battery usage
-
                         decreaseBattery(1);
-
 
                     },
                     300
@@ -588,7 +960,9 @@ function updatePhotoCounter() {
 // BATTERY
 // =========================================================
 
-function decreaseBattery(amount) {
+function decreaseBattery(
+    amount
+) {
 
     battery -= amount;
 
@@ -604,15 +978,15 @@ function decreaseBattery(amount) {
         battery + "%";
 
 
-    // Camera automatically turns off
-
     if (battery === 0) {
 
         cameraOn = false;
 
+
         camera.classList.remove(
             "camera-on"
         );
+
 
         stopRecording();
 
@@ -622,7 +996,7 @@ function decreaseBattery(amount) {
 
 
 // =========================================================
-// VIDEO / RECORDING BUTTON
+// VIDEO BUTTON
 // =========================================================
 
 videoButton.addEventListener(
@@ -665,10 +1039,28 @@ function startRecording() {
     updateRecordTime();
 
 
-    playBeep(
-        700,
-        0.08,
-        0.04
+    // Start recording beep
+
+    playTone(
+        650,
+        0.07,
+        0.035,
+        "sine"
+    );
+
+
+    setTimeout(
+        () => {
+
+            playTone(
+                900,
+                0.07,
+                0.035,
+                "sine"
+            );
+
+        },
+        80
     );
 
 
@@ -681,8 +1073,6 @@ function startRecording() {
 
                 updateRecordTime();
 
-
-                // Small battery drain
 
                 if (
                     recordingSeconds % 10 ===
@@ -706,6 +1096,9 @@ function startRecording() {
 
 function stopRecording() {
 
+    if (!recording) return;
+
+
     recording = false;
 
 
@@ -722,10 +1115,28 @@ function stopRecording() {
     recordingInterval = null;
 
 
-    playBeep(
-        450,
-        0.1,
-        0.04
+    // Stop recording sound
+
+    playTone(
+        900,
+        0.07,
+        0.035,
+        "sine"
+    );
+
+
+    setTimeout(
+        () => {
+
+            playTone(
+                600,
+                0.09,
+                0.035,
+                "sine"
+            );
+
+        },
+        80
     );
 
 }
@@ -741,6 +1152,7 @@ function updateRecordTime() {
         Math.floor(
             recordingSeconds / 60
         );
+
 
     const seconds =
         recordingSeconds % 60;
@@ -771,9 +1183,6 @@ function updateRecordTime() {
 // ZOOM
 // =========================================================
 
-let zoomLevel = 1;
-
-
 zoomWide.addEventListener(
     "click",
     () => {
@@ -794,11 +1203,12 @@ zoomWide.addEventListener(
         updateZoom();
 
 
-        playBeep(
-            650,
-            0.04,
-            0.025
+        playZoomSound(
+            "wide"
         );
+
+
+        decreaseBattery(0);
 
     }
 );
@@ -824,11 +1234,12 @@ zoomTele.addEventListener(
         updateZoom();
 
 
-        playBeep(
-            800,
-            0.04,
-            0.025
+        playZoomSound(
+            "tele"
         );
+
+
+        decreaseBattery(0);
 
     }
 );
@@ -880,10 +1291,11 @@ playbackButton.addEventListener(
         );
 
 
-        playBeep(
+        playTone(
             900,
             0.05,
-            0.03
+            0.03,
+            "sine"
         );
 
     }
