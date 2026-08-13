@@ -160,52 +160,131 @@ function playShutterSound() {
 
     const ctx = getAudioContext();
 
+    const now = ctx.currentTime;
 
-    const oscillator =
+
+    // =========================================
+    // SHUTTER "CLACK"
+    // =========================================
+
+    const clickOscillator = ctx.createOscillator();
+    const clickGain = ctx.createGain();
+
+    clickOscillator.type = "square";
+
+    clickOscillator.frequency.setValueAtTime(
+        1800,
+        now
+    );
+
+    clickOscillator.frequency.exponentialRampToValueAtTime(
+        350,
+        now + 0.035
+    );
+
+    clickGain.gain.setValueAtTime(
+        0.09,
+        now
+    );
+
+    clickGain.gain.exponentialRampToValueAtTime(
+        0.001,
+        now + 0.04
+    );
+
+    clickOscillator.connect(clickGain);
+    clickGain.connect(ctx.destination);
+
+    clickOscillator.start(now);
+    clickOscillator.stop(now + 0.04);
+
+
+    // =========================================
+    // SECOND MECHANICAL CLICK
+    // =========================================
+
+    const secondOscillator =
         ctx.createOscillator();
 
-    const gain =
+    const secondGain =
         ctx.createGain();
 
+    secondOscillator.type = "triangle";
 
-    oscillator.type = "square";
+    secondOscillator.frequency.setValueAtTime(
+        900,
+        now + 0.055
+    );
 
-
-    oscillator.frequency.setValueAtTime(
+    secondOscillator.frequency.exponentialRampToValueAtTime(
         180,
-        ctx.currentTime
+        now + 0.095
     );
 
-
-    oscillator.frequency.exponentialRampToValueAtTime(
-        75,
-        ctx.currentTime + 0.12
+    secondGain.gain.setValueAtTime(
+        0.07,
+        now + 0.055
     );
 
-
-    gain.gain.setValueAtTime(
-        0.08,
-        ctx.currentTime
-    );
-
-
-    gain.gain.exponentialRampToValueAtTime(
+    secondGain.gain.exponentialRampToValueAtTime(
         0.001,
-        ctx.currentTime + 0.12
+        now + 0.105
+    );
+
+    secondOscillator.connect(secondGain);
+    secondGain.connect(ctx.destination);
+
+    secondOscillator.start(
+        now + 0.055
+    );
+
+    secondOscillator.stop(
+        now + 0.11
     );
 
 
-    oscillator.connect(gain);
+    // =========================================
+    // TINY CAMERA MECHANISM
+    // =========================================
 
-    gain.connect(ctx.destination);
+    const mechanism =
+        ctx.createOscillator();
 
+    const mechanismGain =
+        ctx.createGain();
 
-    oscillator.start();
+    mechanism.type = "sine";
 
-    oscillator.stop(
-        ctx.currentTime + 0.12
+    mechanism.frequency.setValueAtTime(
+        3200,
+        now + 0.015
     );
 
+    mechanism.frequency.exponentialRampToValueAtTime(
+        900,
+        now + 0.07
+    );
+
+    mechanismGain.gain.setValueAtTime(
+        0.018,
+        now + 0.015
+    );
+
+    mechanismGain.gain.exponentialRampToValueAtTime(
+        0.001,
+        now + 0.075
+    );
+
+    mechanism.connect(mechanismGain);
+    mechanismGain.connect(ctx.destination);
+
+    mechanism.start(
+        now + 0.015
+    );
+
+    mechanism.stop(
+        now + 0.08
+    );
 }
 
 
