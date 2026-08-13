@@ -14,11 +14,31 @@
 
     <div class="camera">
 
-        <!-- =========================
+        <!-- =====================================================
+             CAMERA BODY DETAILS
+        ====================================================== -->
+
+        <div class="camera-highlight"></div>
+
+        <div class="camera-grip"></div>
+
+        <!-- Small optical detail / sensor area -->
+        <div class="optical-detail">
+            <div class="optical-glass"></div>
+        </div>
+
+        <div class="af-assist">
+            <div class="af-light"></div>
+        </div>
+
+
+        <!-- =====================================================
              TOP CAMERA CONTROLS
-        ========================== -->
+        ====================================================== -->
 
         <div class="top-controls">
+
+            <div class="status-led"></div>
 
             <button class="power-button" aria-label="Power">
                 ⏻
@@ -47,15 +67,23 @@
         </div>
 
 
-        <!-- =========================
+        <!-- =====================================================
              LCD SCREEN
-        ========================== -->
+        ====================================================== -->
 
         <div class="screen">
 
-            <!-- STARTUP SCREEN -->
+            <!-- SCREEN GLASS -->
+            <div class="screen-glass"></div>
+
+
+            <!-- =================================================
+                 STARTUP SCREEN
+            ================================================== -->
 
             <div class="startup-screen">
+
+                <div class="startup-glow"></div>
 
                 <div class="canon-logo">
                     CANON
@@ -65,10 +93,14 @@
                     PowerShot
                 </div>
 
+                <div class="startup-line"></div>
+
             </div>
 
 
-            <!-- SHOOTING SCREEN -->
+            <!-- =================================================
+                 SHOOTING SCREEN
+            ================================================== -->
 
             <div class="shooting-screen">
 
@@ -95,6 +127,8 @@
 
                 <div class="screen-center">
 
+                    <!-- PHOTO -->
+
                     <div class="live-view">
 
                         <img
@@ -103,12 +137,28 @@
                             alt="Camera memory"
                         >
 
+                        <div class="photo-vignette"></div>
+
                     </div>
 
 
-                    <!-- FOCUS BOX -->
+                    <!-- FOCUS RETICLE -->
 
-                    <div class="focus-box"></div>
+                    <div class="focus-box">
+
+                        <span class="focus-corner top-left"></span>
+                        <span class="focus-corner top-right"></span>
+                        <span class="focus-corner bottom-left"></span>
+                        <span class="focus-corner bottom-right"></span>
+
+                    </div>
+
+
+                    <!-- FOCUS STATUS -->
+
+                    <div class="focus-status">
+                        AF
+                    </div>
 
 
                     <!-- RECORDING DISPLAY -->
@@ -153,6 +203,11 @@
 
                     </div>
 
+
+                    <!-- LCD GRID / COMPOSITION MARKERS -->
+
+                    <div class="lcd-grid"></div>
+
                 </div>
 
 
@@ -179,9 +234,9 @@
         </div>
 
 
-        <!-- =========================
+        <!-- =====================================================
              CAMERA CONTROLS
-        ========================== -->
+        ====================================================== -->
 
         <div class="controls">
 
@@ -229,12 +284,25 @@
 
         </div>
 
+
+        <!-- =====================================================
+             SMALL CAMERA LABEL
+        ====================================================== -->
+
+        <div class="camera-label">
+            PowerShot
+        </div>
+
+        <div class="camera-model">
+            DIGITAL CAMERA
+        </div>
+
     </div>
 
 
-    <!-- =========================
+    <!-- =========================================================
          JAVASCRIPT
-    ========================== -->
+    ========================================================== -->
 
     <script src="script.js"></script>
 
