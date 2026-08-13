@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +13,10 @@
 <body>
 
     <div class="camera">
-        <!-- TOP CAMERA CONTROLS -->
+
+        <!-- =========================
+             TOP CAMERA CONTROLS
+        ========================== -->
 
         <div class="top-controls">
 
@@ -35,67 +39,87 @@
 
         </div>
 
-        <!-- LCD SCREEN -->
+
+        <!-- =========================
+             LCD SCREEN
+        ========================== -->
+
         <div class="screen">
 
-    <!-- STARTUP SCREEN -->
+            <!-- STARTUP SCREEN -->
 
-    <div class="startup-screen">
+            <div class="startup-screen">
 
-        <div class="canon-logo">
-            CANON
-        </div>
+                <div class="canon-logo">
+                    CANON
+                </div>
 
-        <div class="powershot-logo">
-            PowerShot
-        </div>
+                <div class="powershot-logo">
+                    PowerShot
+                </div>
 
-    </div>
-
-
-    <!-- SHOOTING SCREEN -->
-
-    <div class="shooting-screen">
-
-        <div class="screen-top">
-            <span>●</span>
-            <span>AUTO</span>
-            <span>🔋 100%</span>
-        </div>
-
-        <div class="screen-center">
-
-            <div class="live-view">
-               <img id="memory-image" src="images/test-1.png" alt="Camera memory">
             </div>
 
-            <div class="focus-box"></div>
+
+            <!-- SHOOTING SCREEN -->
+
+            <div class="shooting-screen">
+
+                <div class="screen-top">
+                    <span>●</span>
+                    <span>AUTO</span>
+                    <span>🔋 100%</span>
+                </div>
+
+
+                <div class="screen-center">
+
+                    <div class="live-view">
+
+                        <img
+                            id="memory-image"
+                            src="images/test-1.png"
+                            alt="Camera memory"
+                        >
+
+                    </div>
+
+                    <div class="focus-box"></div>
+
+                </div>
+
+
+                <div class="screen-bottom">
+
+                    <span>1/125</span>
+                    <span>F2.8</span>
+                    <span>ISO 200</span>
+
+                </div>
+
+            </div>
 
         </div>
 
-        <div class="screen-bottom">
 
-            <span>1/125</span>
-            <span>F2.8</span>
-            <span>ISO 200</span>
-
-        </div>
-
-    </div>
-
-</div>
-
-        <!-- CAMERA CONTROLS -->
+        <!-- =========================
+             CAMERA CONTROLS
+        ========================== -->
 
         <div class="controls">
 
-            <button class="small-button">MENU</button>
+            <button class="small-button">
+                MENU
+            </button>
 
-            <button class="small-button">DISP</button>
+            <button class="small-button">
+                DISP
+            </button>
 
             <button class="small-button playback">
                 ▶
             </button>
+
 
             <div class="control-wheel">
 
@@ -103,12 +127,24 @@
                     SET
                 </div>
 
-                <div class="wheel-top">▲</div>
-                <div class="wheel-bottom">▼</div>
-                <div class="wheel-left">◀</div>
-                <div class="wheel-right">▶</div>
+                <div class="wheel-top">
+                    ▲
+                </div>
+
+                <div class="wheel-bottom">
+                    ▼
+                </div>
+
+                <div class="wheel-left">
+                    ◀
+                </div>
+
+                <div class="wheel-right">
+                    ▶
+                </div>
 
             </div>
+
 
             <button class="small-button video">
                 ●
@@ -117,91 +153,13 @@
         </div>
 
     </div>
-    <script>
-const camera = document.querySelector(".camera");
-const powerButton = document.querySelector(".power-button");
-const shutterButton = document.querySelector(".shutter-button");
-
-let cameraOn = false;
-let starting = false;
-let photoNumber = 0;
-
-const memories = [
-    "images/test-1.svg",
-    "images/test-2.svg",
-    "images/test-3.svg"
-];
-
-const memoryImage = document.querySelector("#memory-image");
 
 
-// POWER BUTTON
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
 
-powerButton.addEventListener("click", () => {
-
-    if (starting) return;
-
-    if (cameraOn) {
-
-        cameraOn = false;
-
-        camera.classList.remove("camera-on");
-
-        return;
-    }
-
-    starting = true;
-
-    camera.classList.add("camera-starting");
-
-    setTimeout(() => {
-
-        camera.classList.remove("camera-starting");
-        camera.classList.add("camera-on");
-
-        cameraOn = true;
-        starting = false;
-
-    }, 1500);
-
-});
-
-
-// SHUTTER BUTTON
-
-shutterButton.addEventListener("click", () => {
-
-    if (!cameraOn) return;
-
-    const focusBox = document.querySelector(".focus-box");
-
-    focusBox.classList.add("focused");
-
-    setTimeout(() => {
-
-        camera.classList.add("taking-photo");
-
-        photoNumber++;
-
-        if (photoNumber >= memories.length) {
-            photoNumber = 0;
-        }
-
-        if (memoryImage) {
-            memoryImage.src = memories[photoNumber];
-        }
-
-        setTimeout(() => {
-
-            camera.classList.remove("taking-photo");
-            focusBox.classList.remove("focused");
-
-        }, 150);
-
-    }, 400);
-
-});
-</script>
+    <script src="script.js"></script>
 
 </body>
 </html>
