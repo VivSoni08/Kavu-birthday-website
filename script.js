@@ -12,9 +12,9 @@ let photoNumber = 0;
 // =========================
 
 const memories = [
-    "images/test-1.svg",
-    "images/test-2.svg",
-    "images/test-3.svg"
+    "images/test-1.png"
+    "images/test-2.png"
+    "images/test-3.png"
 ];
 
 const memoryImage = document.querySelector("#memory-image");
