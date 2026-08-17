@@ -10,7 +10,6 @@ const videoButton = document.querySelector(".video");
 
 const currentPhoto = document.querySelector("#current-photo");
 const totalPhotos = document.querySelector("#total-photos");
-
 const recordTime = document.querySelector("#record-time");
 const batteryLevel = document.querySelector("#battery-level");
 
@@ -24,6 +23,9 @@ const zoomWide =
 
 const zoomTele =
     document.querySelector(".zoom-tele");
+
+const photoFilename =
+    document.querySelector("#photo-filename");
 
 
 // =========================================================
@@ -54,6 +56,9 @@ const memories = [
     "images/test-2.png",
     "images/test-3.png"
 ];
+
+
+// Set total number of photos
 
 totalPhotos.textContent = memories.length;
 
@@ -102,28 +107,36 @@ function playTone(
 
     const now = ctx.currentTime;
 
-    const oscillator = ctx.createOscillator();
-    const gain = ctx.createGain();
+    const oscillator =
+        ctx.createOscillator();
+
+    const gain =
+        ctx.createGain();
 
     oscillator.type = type;
+
 
     oscillator.frequency.setValueAtTime(
         frequency,
         now
     );
 
+
     gain.gain.setValueAtTime(
         volume,
         now
     );
+
 
     gain.gain.exponentialRampToValueAtTime(
         0.001,
         now + duration
     );
 
+
     oscillator.connect(gain);
     gain.connect(ctx.destination);
+
 
     oscillator.start(now);
 
@@ -146,10 +159,16 @@ function playMotor(
 
     const now = ctx.currentTime;
 
-    const oscillator = ctx.createOscillator();
-    const gain = ctx.createGain();
+    const oscillator =
+        ctx.createOscillator();
 
-    oscillator.type = "sawtooth";
+    const gain =
+        ctx.createGain();
+
+
+    oscillator.type =
+        "sawtooth";
+
 
     if (direction === "up") {
 
@@ -174,7 +193,9 @@ function playMotor(
             95,
             now + duration
         );
+
     }
+
 
     gain.gain.setValueAtTime(
         0.001,
@@ -196,14 +217,20 @@ function playMotor(
         now + duration
     );
 
+
     oscillator.connect(gain);
-    gain.connect(ctx.destination);
+
+    gain.connect(
+        ctx.destination
+    );
+
 
     oscillator.start(now);
 
     oscillator.stop(
         now + duration
     );
+
 
     setTimeout(
         () => {
@@ -231,10 +258,12 @@ function playPowerOnSound() {
 
     getAudioContext();
 
+
     playMotor(
         0.65,
         "up"
     );
+
 
     setTimeout(
         () => {
@@ -249,6 +278,7 @@ function playPowerOnSound() {
         },
         500
     );
+
 
     setTimeout(
         () => {
@@ -274,12 +304,14 @@ function playPowerOffSound() {
 
     getAudioContext();
 
+
     playTone(
         620,
         0.08,
         0.03,
         "sine"
     );
+
 
     setTimeout(
         () => {
@@ -292,6 +324,7 @@ function playPowerOffSound() {
         },
         100
     );
+
 
     setTimeout(
         () => {
@@ -317,12 +350,14 @@ function playFocusSound() {
 
     getAudioContext();
 
+
     playTone(
         720,
         0.055,
         0.035,
         "sine"
     );
+
 
     setTimeout(
         () => {
@@ -346,9 +381,11 @@ function playFocusSound() {
 
 function playShutterSound() {
 
-    const ctx = getAudioContext();
+    const ctx =
+        getAudioContext();
 
-    const now = ctx.currentTime;
+    const now =
+        ctx.currentTime;
 
 
     // FIRST SHUTTER CURTAIN
@@ -359,28 +396,34 @@ function playShutterSound() {
     const clickGain =
         ctx.createGain();
 
+
     clickOscillator.type =
         "square";
+
 
     clickOscillator.frequency.setValueAtTime(
         2100,
         now
     );
 
+
     clickOscillator.frequency.exponentialRampToValueAtTime(
         380,
         now + 0.035
     );
+
 
     clickGain.gain.setValueAtTime(
         0.10,
         now
     );
 
+
     clickGain.gain.exponentialRampToValueAtTime(
         0.001,
         now + 0.045
     );
+
 
     clickOscillator.connect(
         clickGain
@@ -389,6 +432,7 @@ function playShutterSound() {
     clickGain.connect(
         ctx.destination
     );
+
 
     clickOscillator.start(now);
 
@@ -405,28 +449,34 @@ function playShutterSound() {
     const secondGain =
         ctx.createGain();
 
+
     secondOscillator.type =
         "triangle";
+
 
     secondOscillator.frequency.setValueAtTime(
         1250,
         now + 0.065
     );
 
+
     secondOscillator.frequency.exponentialRampToValueAtTime(
         190,
         now + 0.115
     );
+
 
     secondGain.gain.setValueAtTime(
         0.075,
         now + 0.065
     );
 
+
     secondGain.gain.exponentialRampToValueAtTime(
         0.001,
         now + 0.125
     );
+
 
     secondOscillator.connect(
         secondGain
@@ -435,6 +485,7 @@ function playShutterSound() {
     secondGain.connect(
         ctx.destination
     );
+
 
     secondOscillator.start(
         now + 0.065
@@ -453,28 +504,34 @@ function playShutterSound() {
     const mechanismGain =
         ctx.createGain();
 
+
     mechanism.type =
         "sine";
+
 
     mechanism.frequency.setValueAtTime(
         3400,
         now + 0.01
     );
 
+
     mechanism.frequency.exponentialRampToValueAtTime(
         850,
         now + 0.075
     );
+
 
     mechanismGain.gain.setValueAtTime(
         0.018,
         now + 0.01
     );
 
+
     mechanismGain.gain.exponentialRampToValueAtTime(
         0.001,
         now + 0.08
     );
+
 
     mechanism.connect(
         mechanismGain
@@ -483,6 +540,7 @@ function playShutterSound() {
     mechanismGain.connect(
         ctx.destination
     );
+
 
     mechanism.start(
         now + 0.01
@@ -517,9 +575,12 @@ function playShutterSound() {
 
 function playZoomSound(direction) {
 
-    const ctx = getAudioContext();
+    const ctx =
+        getAudioContext();
 
-    const now = ctx.currentTime;
+    const now =
+        ctx.currentTime;
+
 
     const oscillator =
         ctx.createOscillator();
@@ -527,8 +588,10 @@ function playZoomSound(direction) {
     const gain =
         ctx.createGain();
 
+
     oscillator.type =
         "sawtooth";
+
 
     if (direction === "tele") {
 
@@ -536,6 +599,7 @@ function playZoomSound(direction) {
             180,
             now
         );
+
 
         oscillator.frequency.exponentialRampToValueAtTime(
             420,
@@ -549,32 +613,39 @@ function playZoomSound(direction) {
             now
         );
 
+
         oscillator.frequency.exponentialRampToValueAtTime(
             170,
             now + 0.16
         );
+
     }
+
 
     gain.gain.setValueAtTime(
         0.001,
         now
     );
 
+
     gain.gain.linearRampToValueAtTime(
         0.025,
         now + 0.025
     );
+
 
     gain.gain.exponentialRampToValueAtTime(
         0.001,
         now + 0.17
     );
 
+
     oscillator.connect(gain);
 
     gain.connect(
         ctx.destination
     );
+
 
     oscillator.start(now);
 
@@ -594,6 +665,7 @@ powerButton.addEventListener(
 
         if (starting) return;
 
+
         getAudioContext();
 
 
@@ -603,13 +675,18 @@ powerButton.addEventListener(
 
             cameraOn = false;
 
+
             camera.classList.remove(
                 "camera-on"
             );
 
+
             if (recording) {
+
                 stopRecording();
+
             }
+
 
             playPowerOffSound();
 
@@ -621,9 +698,11 @@ powerButton.addEventListener(
 
         starting = true;
 
+
         camera.classList.add(
             "camera-starting"
         );
+
 
         playPowerOnSound();
 
@@ -635,24 +714,31 @@ powerButton.addEventListener(
                     "camera-starting"
                 );
 
+
                 camera.classList.add(
                     "camera-on"
                 );
+
 
                 cameraOn = true;
 
                 starting = false;
 
+
                 photoNumber = 0;
+
 
                 memoryImage.src =
                     memories[
                         photoNumber
                     ];
 
+
                 updatePhotoCounter();
 
+
                 zoomLevel = 1;
+
 
                 updateZoom();
 
@@ -675,6 +761,7 @@ shutterButton.addEventListener(
 
         if (takingPhoto) return;
 
+
         takingPhoto = true;
 
 
@@ -683,6 +770,7 @@ shutterButton.addEventListener(
         focusBox.classList.add(
             "focused"
         );
+
 
         playFocusSound();
 
@@ -693,6 +781,7 @@ shutterButton.addEventListener(
                 focusBox.classList.remove(
                     "focused"
                 );
+
 
                 focusBox.classList.add(
                     "locked"
@@ -712,9 +801,11 @@ shutterButton.addEventListener(
                     "taking-photo"
                 );
 
+
                 camera.classList.add(
                     "camera-shake"
                 );
+
 
                 playShutterSound();
 
@@ -723,11 +814,14 @@ shutterButton.addEventListener(
 
                 photoNumber++;
 
+
                 if (
                     photoNumber >=
                     memories.length
                 ) {
+
                     photoNumber = 0;
+
                 }
 
 
@@ -744,7 +838,9 @@ shutterButton.addEventListener(
                                 photoNumber
                             ];
 
+
                         updatePhotoCounter();
+
 
                         liveView.classList.remove(
                             "photo-changing"
@@ -764,15 +860,19 @@ shutterButton.addEventListener(
                             "taking-photo"
                         );
 
+
                         camera.classList.remove(
                             "camera-shake"
                         );
+
 
                         focusBox.classList.remove(
                             "locked"
                         );
 
+
                         takingPhoto = false;
+
 
                         decreaseBattery(1);
 
@@ -788,13 +888,29 @@ shutterButton.addEventListener(
 
 
 // =========================================================
-// PHOTO COUNTER
+// PHOTO COUNTER + FILENAME
 // =========================================================
 
 function updatePhotoCounter() {
 
     currentPhoto.textContent =
         photoNumber + 1;
+
+
+    if (photoFilename) {
+
+        const filenameNumber =
+            String(
+                photoNumber + 1
+            ).padStart(
+                4,
+                "0"
+            );
+
+
+        photoFilename.textContent =
+            `IMG_${filenameNumber}.JPG`;
+    }
 }
 
 
@@ -806,9 +922,13 @@ function decreaseBattery(amount) {
 
     battery -= amount;
 
+
     if (battery < 0) {
+
         battery = 0;
+
     }
+
 
     batteryLevel.textContent =
         battery + "%";
@@ -818,11 +938,14 @@ function decreaseBattery(amount) {
 
         cameraOn = false;
 
+
         camera.classList.remove(
             "camera-on"
         );
 
+
         stopRecording();
+
     }
 }
 
@@ -836,6 +959,7 @@ videoButton.addEventListener(
     () => {
 
         if (!cameraOn) return;
+
 
         if (recording) {
 
@@ -860,9 +984,11 @@ function startRecording() {
 
     recordingSeconds = 0;
 
+
     camera.classList.add(
         "recording"
     );
+
 
     updateRecordTime();
 
@@ -896,6 +1022,7 @@ function startRecording() {
 
                 recordingSeconds++;
 
+
                 updateRecordTime();
 
 
@@ -922,15 +1049,19 @@ function stopRecording() {
 
     if (!recording) return;
 
+
     recording = false;
+
 
     camera.classList.remove(
         "recording"
     );
 
+
     clearInterval(
         recordingInterval
     );
+
 
     recordingInterval = null;
 
@@ -970,8 +1101,10 @@ function updateRecordTime() {
             recordingSeconds / 60
         );
 
+
     const seconds =
         recordingSeconds % 60;
+
 
     recordTime.textContent =
 
@@ -1003,13 +1136,19 @@ zoomWide.addEventListener(
 
         if (!cameraOn) return;
 
+
         zoomLevel -= 0.1;
 
+
         if (zoomLevel < 1) {
+
             zoomLevel = 1;
+
         }
 
+
         updateZoom();
+
 
         playZoomSound(
             "wide"
@@ -1025,13 +1164,19 @@ zoomTele.addEventListener(
 
         if (!cameraOn) return;
 
+
         zoomLevel += 0.1;
 
+
         if (zoomLevel > 2) {
+
             zoomLevel = 2;
+
         }
 
+
         updateZoom();
+
 
         playZoomSound(
             "tele"
@@ -1061,15 +1206,18 @@ const playbackButton =
         ".playback"
     );
 
+
 playbackButton.addEventListener(
     "click",
     () => {
 
         if (!cameraOn) return;
 
+
         playbackIndicator.classList.add(
             "visible"
         );
+
 
         setTimeout(
             () => {
@@ -1081,6 +1229,7 @@ playbackButton.addEventListener(
             },
             1200
         );
+
 
         playTone(
             900,
